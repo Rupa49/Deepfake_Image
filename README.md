@@ -1,4 +1,4 @@
-# Deepfake_Image
+# deepfake_Image
 🛡️ DeepFake Forensic Investigation Suite
 An advanced deep learning-based forensic tool designed to detect manipulated images using a Dual-Branch CNN architecture combined with traditional forensic signals. 
 This project specializes in identifying GAN-generated faces and tampered regions using spatial and frequency-domain analysis.
