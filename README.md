@@ -1,122 +1,90 @@
-# deepfake_Image
 🛡️ DeepFake Forensic Investigation Suite
-An advanced deep learning-based forensic tool designed to detect manipulated images using a Dual-Branch CNN architecture combined with traditional forensic signals. 
 
-This project specializes in identifying GAN-generated faces and tampered regions using spatial and frequency-domain analysis.
-
-🚀 Key Features
-
-1.Dual-Branch Detection: Combines spatial (RGB) features and frequency (FFT) artifacts for high-accuracy classification.
-
-2.Explainable AI (XAI): Integrated Grad-CAM to visualize exactly which regions of an image the model considers "suspicious."
-
-3.Multi-Signal Forensics: Includes Error Level Analysis (ELA) and Noise Pattern Analysis to detect compression inconsistencies.
-
-4.Frequency Analysis: Real-time Fast Fourier Transform (FFT) spectrum visualization to identify GAN fingerprints.
-
-5.Forensic Reporting: Generate and download a detailed .txt report of the investigation findings.
+Advanced 6-Signal Telemetry: CNN + ELA + Noise + DCT + Texture + Edge
 
 
-🧠 Model Architecture
+An advanced, multi-layered forensic tool designed to detect AI-generated manipulations and digital tampering. Unlike standard detectors, this suite uses an Ensemble Evidence approach, allowing traditional forensic signals to override the AI if specific manipulation traces are found.
 
-The core of this suite is a custom dual-stream neural network designed for robust forensic analysis.
+https://rupa49-deepfakeimage.streamlit.app/
 
-System WorkflowInput Image: The system accepts a $224 \times 224 \times 3$ RGB image.
 
-RGB Branch: Uses an EfficientNet-B0 backbone to extract deep spatial features (vector size: 1280).
+🚀 What's New: The 6-Signal Engine
 
-Frequency Branch: Computes the FFT → Log Magnitude to capture periodic artifacts common in AI-generated imagery, processed through specialized Convolutional Layers.
+The system now runs 6 independent forensic signals simultaneously to provide a comprehensive analysis:
 
-Channel Attention: A fusion mechanism that weighs the most important features from both branches.Classifier: A final dense layer outputting the Fake Probability.
 
-  Graph TD
-    A[Input Image 224x224x3] --> B1[RGB Branch]
-    A --> B2[Frequency Branch]
-    B1 --> C1[EfficientNet-B0]
-    B2 --> C2[FFT -> Log Magnitude]
-    C1 --> D1[Feature Vector 1280]
-    C2 --> D2[Conv Layers]
-    D1 --> E[Channel Attention & Fusion]
-    D2 --> E
-    E --> F[Classifier]
-    F --> G[Fake Probability]
-    
+1.CNN Face-Swap Detector: Deep learning analysis trained on the CelebsV2 dataset to find structural facial inconsistencies.
 
-🔬 Forensic Methodology
-  
-This suite employs a "Defense-in-Depth" strategy by analyzing four distinct digital signals:
-  
-Spatial Attention (Grad-CAM): Identifies where the CNN is looking. In deepfakes, the model often focuses on the boundaries of the face, the eyes, or the mouth where blending artifacts are common.
-  
-Error Level Analysis (ELA): Detects tampering by saving the image at a specific quality level and calculating the difference. Non-uniform bright patches indicate regions with different compression histories (likely "pasted" elements).
-  
-Noise Pattern Analysis: Analyzes the High-Frequency residual noise. Natural images have a consistent "sensor noise" fingerprint, while AI-generated or tampered images show statistical inconsistencies in these patterns.
-  
-Frequency Domain (FFT): GAN-generated images often leave periodic "checkerboard" artifacts. These appear as anomalous bright spots in the frequency spectrum that are invisible to the naked eye.
 
+2.Error Level Analysis (ELA): Identifies different compression levels within a single frame—perfect for spotting "pasted" or "cloned" objects.
+
+
+3.Sensor Noise Maps: Extracts high-frequency residual noise to check for sensor fingerprint consistency.
+
+
+4.DCT Frequency Analysis: Scans for "checkerboard" artifacts and GAN fingerprints in the Discrete Cosine Transform domain.
+
+
+5.Texture Uniformity (LBP): Uses Local Binary Patterns to find unnatural smoothness or "robotic" skin textures common in AI generation.
+
+
+6.Edge Sharpness Profiles: Analyzes the transition gradients of edges to detect blurring or blending used to hide manipulation boundaries.
+
+
+🧠 Technical Architecture
+
+The core remains a Dual-Branch CNN, but it is now supported by an ensemble logic:
+
+
+1.RGB Branch: EfficientNet-B0 backbone extracting spatial features.
+
+2.Frequency Branch: FFT-based log-magnitude analysis.
+
+3.Smart Ensemble Algorithm: A weighting mechanism that prevents "False Positives" from high compression by cross-referencing CNN results with traditional Texture and Edge data.
+
+🔬 Detection Capabilities
+
+Face-swap deepfakes: Detects identity replacement.
+
+1.AI-generated images: Identifies traces from Midjourney, DALL-E, and Stable Diffusion.
+
+2.Image manipulations: Spots pasted objects or clone-stamping.
+
+3.Compression artifacts: Differentiates between a real re-saved JPEG and a manipulated one.
 
 
 🛠️ Tech Stack
-  
-Language: Python
-Deep Learning: PyTorch, Torchvision
-Web Framework: Streamlit
-Computer Vision: OpenCV, PIL
-Data Analysis: NumPy, Matplotlib, Scikit-Learn
+
+ Core: Python, PyTorch
+
+ UI/UX: Streamlit (Custom CSS for Dark Forensic Theme)
+
+ Forensics: OpenCV, Scikit-Image, Plotly (for interactive signal graphs)
+
+ Deployment: GitHub & Streamlit Cloud
 
 
 📁 Project Structure
-  
-├── app.py                # Main Streamlit Dashboard
-  
-├── model.py              # Dual-Branch Model Architecture
-  
-├── forensics.py          # ELA & Noise Analysis Functions
-  
-├── deepfake_model.pth    # Trained Model Weights
-  
-├── requirements.txt      # Project Dependencies
-  
-└── README.md             # Project Documentation
 
-  
-⚙️ Installation & Usage
-  
-Clone the Repository:
-  
-git clone https://github.com/your-username/deepfake-forensic-suite.git
+├── app.py              # New 6-Signal Dashboard UI
+├── model.py            # Dual-Branch CNN (EfficientNet-B0 + FFT)
+├── forensics.py        # ELA, DCT, LBP, and Edge analysis logic
+├── deepfake_model.pth  # Trained weights (CelebsV2)
+├── requirements.txt    # Now includes Plotly and Scikit-Image
+└── README.md           # Documentation
 
-cd deepfake-forensic-suite
-  
-Install Dependencies:
+
+⚙️ Installation & Local Usage
+
+# 1. Clone the repo
+git clone https://github.com/Rupa49/deepfake_Image.git
+
+# 2. Install requirements (Ensure Plotly is included)
 pip install -r requirements.txt
-  
-Run the Application:
+
+# 3. Launch the dashboard
 streamlit run app.py
 
 
-🛠️ Technical Challenges & Solutions
-  
-The "False Positive" Problem: Real photos from social media often trigger "Fake" verdicts due to aggressive platform compression.
-  
-Solution: Implemented an Ensemble Scoring system (60% CNN + 40% Forensic signals) to reduce sensitivity to standard compression artifacts.
-  
-Explainability: Standard CNNs are "black boxes."Solution: Integrated Grad-CAM using OpenCV to provide forensic investigators with a visual heatmap of the   evidence.
-  
-Compute Efficiency: Deep learning models can be heavy for web apps.
-  
-Solution: Leveraged EfficientNet-B0 for its high accuracy-to-parameter ratio, ensuring the suite remains responsive on standard hardware.
-
-  
-📊 Performance
-  
-Backbone: EfficientNet-B0
-Input Resolution: $224 \times 224 \times 3$
-Detection Speed: ~2-3 seconds per image (depending on hardware).
-
-
 📝 Disclaimer
-  
-This tool is developed as part of a Minor Project at GNA University. While it utilizes state-of-the-art forensic techniques, it should be used as an assistive tool for digital investigation rather than a definitive legal proof.
-
-
+This tool was developed as a forensic project at GNA University. It is designed to assist digital investigators and should be used as a high-probability detection tool rather than absolute legal evidence.
