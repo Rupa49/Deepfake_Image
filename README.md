@@ -67,10 +67,15 @@ Face-swap deepfakes: Detects identity replacement.
 📁 Project Structure
 
 ├── app.py              # New 6-Signal Dashboard UI
+
 ├── model.py            # Dual-Branch CNN (EfficientNet-B0 + FFT)
+
 ├── forensics.py        # ELA, DCT, LBP, and Edge analysis logic
+
 ├── deepfake_model.pth  # Trained weights (CelebsV2)
+
 ├── requirements.txt    # Now includes Plotly and Scikit-Image
+
 └── README.md           # Documentation
 
 
